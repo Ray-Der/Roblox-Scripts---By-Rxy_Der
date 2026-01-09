@@ -1,7 +1,3 @@
--- Multi Tool FINAL: Spectator + Teleport + MINIMIZAR A BURBUJA
--- Ventana pequeña → Toca "−" para minimizar a burbuja
--- Toca la burbuja "👁" para abrir de nuevo (arrastra la burbuja también)
-
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
