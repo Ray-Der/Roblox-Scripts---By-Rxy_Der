@@ -18,7 +18,7 @@ gui.Name = "MultiTool"
 gui.ResetOnSpawn = false
 gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Burbuja minimizada (extremadamente pequeña y arrastrable)
+-- Burbuja minimizada
 local bubble = Instance.new("TextButton")
 bubble.Size = UDim2.new(0, 45, 0, 45)
 bubble.Position = UDim2.new(0, 20, 0, 20)
@@ -56,7 +56,7 @@ title.TextSize = 14
 title.TextXAlignment = Enum.TextXAlignment.Center
 title.Parent = frame
 
--- Botón minimizar (antes era cerrar)
+-- Botón minimizar
 local minimizeBtn = Instance.new("TextButton")
 minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
 minimizeBtn.Position = UDim2.new(1, -33, 0, 0)
@@ -122,7 +122,7 @@ tabTP.Activated:Connect(function()
     tabTP.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 end)
 
--- ====================== SPECTATOR ======================
+-- ====================== SPECTATOR (CON BOTÓN TP Y BOTONES PEQUEÑOS) ======================
 local specInput = Instance.new("TextBox")
 specInput.Size = UDim2.new(1, 0, 0, 25)
 specInput.Position = UDim2.new(0, 0, 0, 0)
@@ -133,15 +133,33 @@ specInput.TextColor3 = Color3.new(1,1,1)
 specInput.TextSize = 12
 specInput.Parent = sectionSpec
 
+-- Frame para botones Stop y TP (pequeños y juntos)
+local specButtonsFrame = Instance.new("Frame")
+specButtonsFrame.Size = UDim2.new(1, 0, 0, 25)
+specButtonsFrame.Position = UDim2.new(0, 0, 0, 30)
+specButtonsFrame.BackgroundTransparency = 1
+specButtonsFrame.Parent = sectionSpec
+
 local specStop = Instance.new("TextButton")
-specStop.Size = UDim2.new(1, 0, 0, 25)
-specStop.Position = UDim2.new(0, 0, 0, 30)
+specStop.Size = UDim2.new(0.5, -3, 1, 0)
 specStop.Text = "Stop"
 specStop.BackgroundColor3 = Color3.fromRGB(220,80,0)
 specStop.TextColor3 = Color3.new(1,1,1)
-specStop.TextSize = 12
-specStop.Parent = sectionSpec
+specStop.Font = Enum.Font.GothamBold
+specStop.TextSize = 11
+specStop.Parent = specButtonsFrame
 
+local specTP = Instance.new("TextButton")
+specTP.Size = UDim2.new(0.5, -3, 1, 0)
+specTP.Position = UDim2.new(0.5, 3, 0, 0)
+specTP.Text = "TP"
+specTP.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+specTP.TextColor3 = Color3.new(1,1,1)
+specTP.Font = Enum.Font.GothamBold
+specTP.TextSize = 11
+specTP.Parent = specButtonsFrame
+
+-- Jugador actual (compacto)
 local specCurrent = Instance.new("Frame")
 specCurrent.Size = UDim2.new(1, 0, 0, 45)
 specCurrent.Position = UDim2.new(0, 0, 0, 60)
@@ -181,6 +199,7 @@ specRight.TextColor3 = Color3.new(1,1,1)
 specRight.TextSize = 14
 specRight.Parent = specCurrent
 
+-- Lista jugadores
 local specList = Instance.new("ScrollingFrame")
 specList.Size = UDim2.new(1, 0, 0, 85)
 specList.Position = UDim2.new(0, 0, 0, 110)
@@ -284,12 +303,27 @@ local function specSpectate(p)
     end)
 end
 
+-- NUEVO: TP al jugador que estás specteando
+local function tpToCurrentTarget()
+    if not specTarget then return end
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    local targetChar = specTarget.Character
+    if hrp and targetChar then
+        local targetHRP = targetChar:FindFirstChild("HumanoidRootPart")
+        if targetHRP then
+            hrp.CFrame = targetHRP.CFrame * CFrame.new(0, 0, -3)  -- Un poco atrás para no chocar
+        end
+    end
+end
+
 specStop.Activated:Connect(function()
     specTarget = nil
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         workspace.CurrentCamera.CameraSubject = LocalPlayer.Character.Humanoid
     end
 end)
+
+specTP.Activated:Connect(tpToCurrentTarget)
 
 specLeft.Activated:Connect(function()
     if #specPlayers > 0 then
@@ -323,7 +357,7 @@ Players.PlayerAdded:Connect(updateSpecList)
 Players.PlayerRemoving:Connect(updateSpecList)
 updateSpecList()
 
--- ====================== TELEPORT ======================
+-- ====================== TELEPORT (sin cambios) ======================
 local tpPoints = {}
 
 local tpSave = Instance.new("TextButton")
@@ -472,5 +506,5 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- Iniciar con ventana abierta
+-- Iniciar abierto
 maximize()
