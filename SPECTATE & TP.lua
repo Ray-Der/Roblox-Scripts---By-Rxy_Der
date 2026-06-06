@@ -311,7 +311,7 @@ local function tpToCurrentTarget()
     if hrp and targetChar then
         local targetHRP = targetChar:FindFirstChild("HumanoidRootPart")
         if targetHRP then
-            hrp.CFrame = targetHRP.CFrame * CFrame.new(0, 0, -3)  -- Un poco atrás para no chocar
+            hrp.CFrame = targetHRP.CFrame * CFrame.new(0, 0, -3)
         end
     end
 end
@@ -506,5 +506,5 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- Iniciar abierto
-maximize()
+-- Iniciar cerrado (cambio aquí)
+minimize()
